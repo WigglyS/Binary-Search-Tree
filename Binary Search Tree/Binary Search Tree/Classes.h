@@ -8,6 +8,7 @@ template<typename T>
 class Node
 {
 public:
+	Node(T newData) { data = newData; }
 	Node* GetLeft() { return Left; }
 	void SetLeft(Node* prev) { Left = prev; }
 	Node* GetRight() { return Right; }
@@ -21,7 +22,7 @@ private:
 	T data;
 };
 
-template<typename T>
+template<typename T> 
 class BinarySearchTree
 {
 private:
@@ -31,8 +32,43 @@ public:
 
 	void Insert(T data)
 	{
+		if (Root == NULL) {
+			Root = new Node(data);
+			return;
+		}
+		else {
+			Node<T>* temp = Root;
+			RecursiveInsert(temp);
+		}
+	}
+	void RecursiveInsert(Node<T>* pointer, T data) {
+		
+		if (data == pointer->Getdata()) {
+			cout << "data already exists" << endl;
+			return;
+		}
+		if (data > pointer->GetData()) {
+			if (pointer->GetRight() == NULL) {
+				pointer->SetRight(new Node(data));
+				return;
+			}
+			else {
 
+				RecursiveInsert(pointer->GetRight());
+			}
 
+		}
+		else if (data < pointer->GetData()) {
+			if (pointer->GetLeft() == NULL) {
+				pointer->SetLeft(new Node(data));
+				return;
+			}
+			else
+			{
+				RecursiveInsert(pointer->GetLeft());
+			}
+		}
+	
 	}
 
 
@@ -53,4 +89,4 @@ public:
 	void Traverse() {
 
 	}
-}
+};
