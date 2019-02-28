@@ -33,7 +33,7 @@ public:
 	void Insert(T data)
 	{
 		if (Root == NULL) {
-			Root = new Node(data);
+			Root = new Node<T>(data);
 			return;
 		}
 		else {
@@ -49,7 +49,7 @@ public:
 		}
 		if (data > pointer->GetData()) {
 			if (pointer->GetRight() == NULL) {
-				pointer->SetRight(new Node(data));
+				pointer->SetRight(new Node<T>(data));
 				return;
 			}
 			else {
@@ -60,7 +60,7 @@ public:
 		}
 		else if (data < pointer->GetData()) {
 			if (pointer->GetLeft() == NULL) {
-				pointer->SetLeft(new Node(data));
+				pointer->SetLeft(new Node<T>(data));
 				return;
 			}
 			else
@@ -87,6 +87,15 @@ public:
 	}
 
 	void Traverse() {
+		//recursively call left and right for all the nodes
+	}
+
+	Node<T>* Maximum(Node<T>* startingPoint)
+	{
+		//search for the farthest node to the right 
+	}
+	Node<T>* Minimum(Node<T>* startingPoint)
+	{
 
 	}
 };
