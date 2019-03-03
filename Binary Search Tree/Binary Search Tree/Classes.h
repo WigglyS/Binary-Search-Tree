@@ -10,6 +10,7 @@ class Node
 public:
 	Node(T newData) { data = newData; }
 	void SetLeft(Node<T>* left) { Left = left; }
+
 	Node<T>* GetLeft() { return Left; }
 	void SetRight(Node<T>* right) { Right = right; }
 	Node<T>* GetRight() { return Right; }
@@ -79,7 +80,6 @@ public:
 				RecursiveInsert(pointer->GetLeft(), data);
 			}
 		}
-	
 	}
 
 
@@ -89,7 +89,7 @@ public:
 			return;
 		}
 		//2 children case
-		if ((NodeToDelete->GetLeft() != nullptr)/* && ( NodeToDelete->GetRight() != nullptr)*/) {
+		if ((NodeToDelete->GetLeft() != nullptr) && ( NodeToDelete->GetRight() != nullptr)) {
 			//going with the smallest value in the right subtree to replace it with
 			Node<T>* ReplacePointer = Minimum(NodeToDelete->GetRight());
 			//check if it has a child// we already know theres none on the left since its the lowest value and that it is on the left of its parent
@@ -220,13 +220,12 @@ public:
 
 	void Traverse(Node<T>* StartingPoint) {
 		////recursively call left and right for all the nodes
-		//if (StartingPoint->GetRight() != nullptr) {
-		//	Traverse(StartingPoint->GetRight());
-		//}
-		//else(StartingPoint->GetLeft() != nullptr)
-		//{
-		//	Traverse(StartingPoint->GetLeft())
-		//}
+		if (StartingPoint->GetRight() != nullptr) {
+			Traverse(StartingPoint->GetRight());
+		}
+		else if(StartingPoint->GetLeft() != nullptr){
+			Traverse(StartingPoint->GetLeft());
+		}
 	}
 
 	Node<T>* Maximum(Node<T>* startingPoint)
