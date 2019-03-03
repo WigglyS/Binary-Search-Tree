@@ -234,16 +234,16 @@ public:
 			}
 		}
 	}
-
-	void Traverse(Node<T>* StartingPoint) {
-		////recursively call left and right for all the nodes
-		if (StartingPoint->GetRight() != nullptr) {
-			Traverse(StartingPoint->GetRight());
-		}
-		else if(StartingPoint->GetLeft() != nullptr){
-			Traverse(StartingPoint->GetLeft());
-		}
-	}
+	//dont need this right now
+	//void Traverse(Node<T>* StartingPoint) {
+	//	////recursively call left and right for all the nodes
+	//	if (StartingPoint->GetRight() != nullptr) {
+	//		Traverse(StartingPoint->GetRight());
+	//	}
+	//	else if(StartingPoint->GetLeft() != nullptr){
+	//		Traverse(StartingPoint->GetLeft());
+	//	}
+	//}
 
 	Node<T>* Maximum(Node<T>* startingPoint)
 	{
