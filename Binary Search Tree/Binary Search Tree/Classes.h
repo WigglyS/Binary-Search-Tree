@@ -93,15 +93,19 @@ public:
 			//going with the smallest value in the right subtree to replace it with
 			Node<T>* ReplacePointer = Minimum(NodeToDelete->GetRight());
 			//check if it has a child// we already know theres none on the left since its the lowest value and that it is on the left of its parent
-			if (ReplacePointer->GetRight() != nullptr) {
-				ReplacePointer->GetRight()->SetParent(ReplacePointer->GetParent());
-				ReplacePointer->GetParent()->SetLeft(ReplacePointer->GetRight());
-			}
 			ReplacePointer->SetLeft(NodeToDelete->GetLeft());
 			NodeToDelete->GetLeft()->SetParent(ReplacePointer);
-			ReplacePointer->SetRight(NodeToDelete->GetRight());
-			NodeToDelete->GetRight()->SetParent(ReplacePointer);
 
+			if (NodeToDelete->GetRight()->Getdata() != ReplacePointer->Getdata()) {
+				ReplacePointer->GetParent()->SetLeft(nullptr);
+				if (ReplacePointer->GetRight() != nullptr) {
+					ReplacePointer->GetRight()->SetParent(ReplacePointer->GetParent());
+				}
+				ReplacePointer->SetRight(NodeToDelete->GetRight());
+				NodeToDelete->GetRight()->SetParent(ReplacePointer);
+			}
+
+			
 			if (NodeToDelete->GetParent() != nullptr) {
 				ReplacePointer->SetParent(NodeToDelete->GetParent());
 				if (NodeToDelete->GetParent()->Getdata() > NodeToDelete->Getdata()) {
@@ -110,6 +114,10 @@ public:
 				else {
 					NodeToDelete->GetParent()->SetRight(ReplacePointer);
 				}
+			}
+			else {
+				ReplacePointer->SetParent (nullptr);
+				Root = ReplacePointer;
 			}
 		}
 
@@ -189,31 +197,31 @@ public:
 			cout << "There is no data in the List" << endl;
 			return nullptr;
 		}
+		Node<T>* ReturnPointer = nullptr;
 		Node<T>* SearchPointer = Root;
-		return RecursiveFind(SearchPointer, data);
-	}
+		while (ReturnPointer == nullptr) {
 
-	//only used in the Find Function
-	Node<T>* RecursiveFind(Node<T>* SearchPointer, T data) {
-		if (data == SearchPointer->Getdata()) {
-			return SearchPointer;
-		}
-		if (data > SearchPointer->Getdata()) {
-			if (SearchPointer->GetRight() == nullptr) {
-				cout << "That value is not search tree" << endl;
-				return nullptr;
+			if (data > SearchPointer->Getdata()) {
+				if (SearchPointer->GetRight() == nullptr) {
+					cout << "That value is not search tree" << endl;
+					return nullptr;
+				}
+				else {
+					SearchPointer = SearchPointer->GetRight();
+				}
 			}
-			else {
-				RecursiveFind(SearchPointer->GetRight(), data);
+			if (data < SearchPointer->Getdata()) {
+				if (SearchPointer->GetLeft() == nullptr) {
+					cout << "That value is not search tree" << endl;
+					return nullptr;
+				}
+				else {
+					SearchPointer = SearchPointer->GetLeft();
+				}
 			}
-		}
-		if (data < SearchPointer->Getdata()) {
-			if (SearchPointer->GetLeft() == nullptr) {
-				cout << "That value is not search tree" << endl;
-				return nullptr;
-			}
-			else {
-				RecursiveFind(SearchPointer->GetLeft(), data);
+			if (data == SearchPointer->Getdata()) {
+				ReturnPointer = SearchPointer;
+				return ReturnPointer;
 			}
 		}
 	}
