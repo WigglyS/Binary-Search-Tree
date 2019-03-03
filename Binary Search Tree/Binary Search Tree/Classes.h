@@ -9,15 +9,16 @@ class Node
 {
 public:
 	Node(T newData) { data = newData; }
-	Node<T>* GetLeft() { return Left; }
 	void SetLeft(Node<T>* left) { Left = left; }
-	Node<T>* GetRight() { return Right; }
+	Node<T>* GetLeft() { return Left; }
 	void SetRight(Node<T>* right) { Right = right; }
+	Node<T>* GetRight() { return Right; }
 	Node<T>* GetParent() { return Parent; }
 	void SetParent(Node<T>* parent) { Parent = parent; }
 
 	T Getdata() { return data; };
 	void SetData(T d) { data = d; };
+	
 private:
 	Node<T>* Left = nullptr;
 	Node<T>* Right = nullptr;
@@ -30,28 +31,30 @@ class BinarySearchTree
 {
 private:
 	Node<T>* Root = nullptr;
-
+	const int DisplaySpace = 3;
 public:
 
 	void Insert(T data)
 	{
-		if (Root == NULL) {
+		
+		if (Root == nullptr) {
 			Root = new Node<T>(data);
 			return;
 		}
 		else {
 			Node<T>* temp = Root;
-			RecursiveInsert(temp);
+			RecursiveInsert(temp,data);
 		}
 	}
 
+	//only used by the insert funvtion shouldnt be called otherwise
 	void RecursiveInsert(Node<T>* pointer, T data) {
 		
 		if (data == pointer->Getdata()) {
 			cout << "data already exists" << endl;
 			return;
 		}
-		if (data > pointer->GetData()) {
+		if (data > pointer->Getdata()) {
 			if (pointer->GetRight() == NULL) {
 				Node<T>* temp = new Node<T>(data);
 				pointer->SetRight(temp);
@@ -64,7 +67,7 @@ public:
 			}
 
 		}
-		else if (data < pointer->GetData()) {
+		else if (data < pointer->Getdata()) {
 			if (pointer->GetLeft() == NULL) {
 				Node<T>* temp = new Node<T>(data);
 				pointer->SetLeft(temp);
@@ -80,14 +83,105 @@ public:
 	}
 
 
-	void Delete(Node<T>* N)
+	void Delete(Node<T>* NodeToDelete)
 	{
+		if (NodeToDelete == nullptr ) {
+			return;
+		}
+		//2 children case
+		if ((NodeToDelete->GetLeft() != nullptr)/* && ( NodeToDelete->GetRight() != nullptr)*/) {
+			//going with the smallest value in the right subtree to replace it with
+			Node<T>* ReplacePointer = Minimum(NodeToDelete->GetRight());
+			//check if it has a child// we already know theres none on the left since its the lowest value and that it is on the left of its parent
+			if (ReplacePointer->GetRight() != nullptr) {
+				ReplacePointer->GetRight()->SetParent(ReplacePointer->GetParent());
+				ReplacePointer->GetParent()->SetLeft(ReplacePointer->GetRight());
+			}
+			ReplacePointer->SetLeft(NodeToDelete->GetLeft());
+			NodeToDelete->GetLeft()->SetParent(ReplacePointer);
+			ReplacePointer->SetRight(NodeToDelete->GetRight());
+			NodeToDelete->GetRight()->SetParent(ReplacePointer);
 
+			if (NodeToDelete->GetParent() != nullptr) {
+				ReplacePointer->SetParent(NodeToDelete->GetParent());
+				if (NodeToDelete->GetParent()->Getdata() > NodeToDelete->Getdata()) {
+					NodeToDelete->GetParent()->SetLeft(ReplacePointer);
+				}
+				else {
+					NodeToDelete->GetParent()->SetRight(ReplacePointer);
+				}
+			}
+		}
+
+		// nochildren case
+		else if (NodeToDelete->GetLeft() == nullptr && NodeToDelete->GetRight() == nullptr) {
+			if (NodeToDelete->GetParent() != nullptr) {
+				if (NodeToDelete->GetParent()->Getdata() > NodeToDelete->Getdata()) {
+					NodeToDelete->GetParent()->SetLeft(nullptr);
+				}
+				else {
+					NodeToDelete->GetParent()->SetRight(nullptr);
+				}
+			}
+			//if it has no parent it is the root
+			else
+			{
+				Root = nullptr;
+			}
+		}
+
+		//one child cases
+		else if (NodeToDelete->GetLeft() == nullptr) {
+			if (NodeToDelete->GetParent() != nullptr)
+			{
+				NodeToDelete->GetRight()->SetParent(NodeToDelete->GetParent());
+				if (NodeToDelete->GetParent()->Getdata() > NodeToDelete->Getdata()) {
+					NodeToDelete->GetParent()->SetLeft(NodeToDelete->GetRight());
+				}
+				else {
+					NodeToDelete->GetParent()->SetRight(NodeToDelete->GetRight());
+				}
+
+			}
+			//if it has no parent it is the root
+			else {
+				NodeToDelete->GetRight()->SetParent(nullptr);
+				Root = NodeToDelete->GetRight();
+			}
+
+		}
+		else if (NodeToDelete->GetRight() == nullptr) {
+			if (NodeToDelete->GetParent() != nullptr)
+			{
+				NodeToDelete->GetLeft()->SetParent(NodeToDelete->GetParent());
+				if (NodeToDelete->GetParent()->Getdata() > NodeToDelete->Getdata()) {
+					NodeToDelete->GetParent()->SetLeft(NodeToDelete->GetLeft());
+				}
+				else {
+					NodeToDelete->GetParent()->SetRight(NodeToDelete->GetLeft());
+				}
+
+			}
+			//if it has no parent it is the root
+			else {
+				NodeToDelete->GetLeft()->SetParent(nullptr);
+				Root = NodeToDelete->GetLeft();
+			}
+		}
+
+		NodeToDelete->SetParent(nullptr);
+		NodeToDelete->SetLeft(nullptr);
+		NodeToDelete->SetRight(nullptr);
+		delete NodeToDelete;
 	}
-
 
 	void Delete(T data) {
 
+		Node<T>* NodeToDelete = Find(data);
+		if (NodeToDelete != nullptr)
+		{
+			Delete(NodeToDelete);
+		}
 	}
 
 	Node<T>* Find(T data) {
@@ -96,10 +190,11 @@ public:
 			return nullptr;
 		}
 		Node<T>* SearchPointer = Root;
-		return RecusiveFind(SearchPointer, data);
+		return RecursiveFind(SearchPointer, data);
 	}
 
-	Node<T>* RecusiveFind(Node<T>* SearchPointer, T data) {
+	//only used in the Find Function
+	Node<T>* RecursiveFind(Node<T>* SearchPointer, T data) {
 		if (data == SearchPointer->Getdata()) {
 			return SearchPointer;
 		}
@@ -109,7 +204,7 @@ public:
 				return nullptr;
 			}
 			else {
-				RecusriveFind(SearchPointer->GetRight(), data);
+				RecursiveFind(SearchPointer->GetRight(), data);
 			}
 		}
 		if (data < SearchPointer->Getdata()) {
@@ -123,28 +218,65 @@ public:
 		}
 	}
 
-
-
-	void Traverse() {
-		//recursively call left and right for all the nodes
+	void Traverse(Node<T>* StartingPoint) {
+		////recursively call left and right for all the nodes
+		//if (StartingPoint->GetRight() != nullptr) {
+		//	Traverse(StartingPoint->GetRight());
+		//}
+		//else(StartingPoint->GetLeft() != nullptr)
+		//{
+		//	Traverse(StartingPoint->GetLeft())
+		//}
 	}
 
 	Node<T>* Maximum(Node<T>* startingPoint)
 	{
 		//search for the farthest node to the right 
-		Node<T>* IterativePointer;
+		Node<T>* IterativePointer = startingPoint;
 		while (IterativePointer->GetRight() != nullptr) {
 			IterativePointer = IterativePointer->GetRight();
 		}
 		return IterativePointer;	
 	}
+
 	Node<T>* Minimum(Node<T>* startingPoint)
 	{
 		//search for the farthest node to the left
-		Node<T>* IterativePointer;
+		Node<T>* IterativePointer = startingPoint;
 		while (IterativePointer->GetLeft() != nullptr) {
 			IterativePointer = IterativePointer->GetLeft();
 		}
 		return IterativePointer;
+	}
+
+	void Display() {
+		
+		Node<T>* StartingPoint = Root;
+		if (StartingPoint != nullptr) {
+			RecursiveDisplay(StartingPoint, -DisplaySpace);
+		}	
+	}
+
+	void RecursiveDisplay(Node<T>* Start,int spacing) {
+		spacing += DisplaySpace;
+
+		//recursively call left and right for all the nodes
+		if (Start->GetRight() != nullptr) {
+			RecursiveDisplay(Start->GetRight(),spacing);
+		}
+		for (int i = 0; i < spacing; i++) {
+			cout << " ";
+		}
+		cout <<"("<< Start->Getdata()<<")" <<endl;
+		
+		if(Start->GetLeft() != nullptr)
+		{
+			RecursiveDisplay(Start->GetLeft(), spacing);
+		}
+	
+	}
+
+	void Testing() {
+
 	}
 };
