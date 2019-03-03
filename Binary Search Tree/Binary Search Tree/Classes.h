@@ -1,6 +1,7 @@
 #pragma once
 #include <string>
 #include <iostream>
+#include <vector>
 
 using namespace std;
 
@@ -47,6 +48,14 @@ public:
 			RecursiveInsert(temp,data);
 		}
 	}
+
+	void InsertMultiple(vector<T> listOfData) {
+		for (int i = 0; i < listOfData.size(); i++)
+		{
+			Insert(listOfData[i]);
+		}
+	}
+
 
 	//only used by the insert funvtion shouldnt be called otherwise
 	void RecursiveInsert(Node<T>* pointer, T data) {
@@ -283,7 +292,49 @@ public:
 	
 	}
 
-	void Testing() {
+	bool Testing() {
+		BinarySearchTree<int> TestBST;
 
+		//testing for delete on empty list
+		try {
+			TestBST.Delete(1);
+		}
+		catch (...) {
+			return false;
+		}
+
+		// testing for inserting duplicate nodes
+		try {
+			TestBST.Insert(1);
+			TestBST.Insert(1);
+
+			//there should only be one in the list
+			if (TestBST.Root->GetLeft() != nullptr || TestBST.Root->GetRight() != nullptr) {
+				return false;
+			}
+		}
+		catch (...) {
+			return false;
+		}
+		
+		// testing for deleteing nodes
+		
+		try {
+			TestBST.Insert(5);
+			TestBST.Insert(6);
+			TestBST.Insert(4);
+			TestBST.Insert(7);
+			TestBST.Insert(8);
+		//no children
+			TestBST.Delete(8);
+		// one child 
+			TestBST.Delete(6);
+		//two children 
+			TestBST.Delete(5);
+		}
+		catch (...) {
+			return false;
+		}
+		return true;
 	}
 };

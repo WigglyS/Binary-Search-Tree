@@ -12,9 +12,12 @@ void main() {
 		int input;
 		system("CLS");
 		BST.Display();
+		//just testng to see if you can add one
+		vector<int> tempArray = { 10,6,9,2,123,5,8,32 };
+
 		cout << "Press (1) to Add Number to tree" << endl;
 		cout << "Press (2) to Remove A Number From the tree" << endl;
-		cout << "Press (3) to Display the tree" << endl;
+		cout << "Press (3) to Add an vector to the tree" << endl;
 		cout << "Press (4) to Run Diagnostics" << endl;
 		cout << "Press (10) to Add 1 - 10 to the tree" << endl;
 		cout << "Press (100) to Add 1 - 100 to the tree" << endl;
@@ -39,16 +42,21 @@ void main() {
 			
 			break;
 		case 3:
-			
-			BST.Display();
+			BST.InsertMultiple(tempArray);
 			break;
 		case 4:
-			
-		
+			if (BST.Testing()) {
+				cout << "Testing was Susessfull" << endl;
+			}
+			else {
+				cout << "Testing failed" << endl;
+			}
+			system("pause");
 			break;
 		case 10:
 			for  (int i = 0; i <= 10 ; i++)
 			{
+				
 				BST.Insert(i);
 			}
 			break;
