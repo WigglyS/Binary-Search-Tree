@@ -105,6 +105,7 @@ public:
 			ReplacePointer->SetLeft(NodeToDelete->GetLeft());
 			NodeToDelete->GetLeft()->SetParent(ReplacePointer);
 
+			//check to see if it is the closest node to the right so that we dont set pointers to itself
 			if (NodeToDelete->GetRight()->Getdata() != ReplacePointer->Getdata()) {
 				ReplacePointer->GetParent()->SetLeft(nullptr);
 				if (ReplacePointer->GetRight() != nullptr) {
@@ -115,6 +116,7 @@ public:
 			}
 
 			
+			//if the node to be deleted dosent have a parent then it is the root
 			if (NodeToDelete->GetParent() != nullptr) {
 				ReplacePointer->SetParent(NodeToDelete->GetParent());
 				if (NodeToDelete->GetParent()->Getdata() > NodeToDelete->Getdata()) {
@@ -202,10 +204,12 @@ public:
 	}
 
 	Node<T>* Find(T data) {
+		//if there is no root nothing has been added
 		if (Root == nullptr) {
 			cout << "There is no data in the List" << endl;
 			return nullptr;
 		}
+		//checks the data to a node and moves untill it runs out of nodes or finds the value
 		Node<T>* ReturnPointer = nullptr;
 		Node<T>* SearchPointer = Root;
 		while (ReturnPointer == nullptr) {
@@ -265,6 +269,7 @@ public:
 		return IterativePointer;
 	}
 
+	//displays the list sideways root is all the way on the right and the bigger values are up
 	void Display() {
 		
 		Node<T>* StartingPoint = Root;
@@ -277,6 +282,7 @@ public:
 		spacing += DisplaySpace;
 
 		//recursively call left and right for all the nodes
+		// for each node it calls its own spacing value gets bigger and the prints that many spaces when it prints
 		if (Start->GetRight() != nullptr) {
 			RecursiveDisplay(Start->GetRight(),spacing);
 		}
